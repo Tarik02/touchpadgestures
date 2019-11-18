@@ -1,8 +1,8 @@
 from touchpadgestures.util import angle, angle_diff, dist_sqr
 from touchpadgestures.detectors.detector import Detector
 
-THRESHOLD1 = 600
-THRESHOLD2 = 900
+THRESHOLD1 = 500
+THRESHOLD2 = 800
 THRESHOLD_REPEAT = 600
 THRESHOLD_REPEAT_CANCEL = 500
 REPEAT_FIRST_TIMEOUT = 0.6
@@ -72,6 +72,8 @@ class SwipeDetector(Detector):
                 self.state = 1
                 self.sx, self.sy = x, y
                 self.big = False
+            else:
+                self.state = -1
 
         if self.state >= 1:
             if area >= 8:
