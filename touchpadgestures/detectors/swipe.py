@@ -68,10 +68,10 @@ class SwipeDetector(Detector):
 
     def handle(self, time: float, x: int, y: int, force: int, fingers: int, area: int) -> bool:
         if self.state == 0:
-            if fingers == 3 or area >= 8:
+            if fingers == 3 or (fingers == 1 and area >= 8):
                 self.state = 1
                 self.sx, self.sy = x, y
-                self.big = False
+                self.big = area >= 8
             else:
                 self.state = -1
 

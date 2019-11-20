@@ -12,7 +12,8 @@ class TapDetector(Detector):
     big = False
 
     def begin(self):
-        pass
+        if self.state == -1:
+            self.state = 0
 
     def end(self, cancel: bool):
         if cancel:
@@ -26,7 +27,7 @@ class TapDetector(Detector):
 
     def handle(self, time: float, x: int, y: int, force: int, fingers: int, area: int) -> bool:
         if self.state == 0 and force > 45:
-            if fingers == 3 or area >= 8:
+            if fingers == 3 or (fingers == 1 and area >= 8):
                 self.state = 1
             else:
                 self.state = -1
@@ -42,7 +43,7 @@ class TapDetector(Detector):
                 self.counter += 1
                 self.set_timer(time + MAX_INTERVAL)
 
-        if self.state == 4 or self.state == -1:
+        if self.state == 4:
             if force < 30:
                 self.reset()
 
