@@ -34,13 +34,13 @@ class SwipeDetector(Detector):
     @property
     def rounded_angle(self):
         a = self.angle
-        if a >= 310 or a <= 50:
+        if a >= 300 or a <= 60:
             return 0
-        elif 50 <= a <= 130:
+        elif 60 <= a <= 120:
             return 1
-        elif 130 <= a <= 230:
+        elif 120 <= a <= 240:
             return 2
-        elif 230 <= 310:
+        elif 240 <= 300:
             return 3
 
     @property
