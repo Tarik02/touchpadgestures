@@ -51,7 +51,7 @@ class TapDetector(Detector):
             if area >= 8:
                 self.big = True
 
-        return self.counter >= 2 or self.state == 3
+        return self.counter >= 3 or self.state == 3
 
     def handle_timer(self, time: float):
         if self.state == 1:

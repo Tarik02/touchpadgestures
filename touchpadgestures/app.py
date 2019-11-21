@@ -1,3 +1,4 @@
+import dataclasses
 import subprocess
 import sys
 from typing import Optional, List
@@ -8,6 +9,7 @@ from pkg_resources import resource_string
 from touchpadgestures.detectors.detector import Detector
 from touchpadgestures.event import Event
 from touchpadgestures.event_source import EventSource
+from touchpadgestures.info import Info
 
 
 class App:
@@ -23,9 +25,21 @@ class App:
     timer_next: float = 0
     timer_detector: Optional[Detector] = None
 
+    info: Info
+
     def __init__(self, props, event_source: EventSource):
         self.props = props
         self.event_source = event_source
+
+        left, right = self.props['LeftEdge'], self.props['RightEdge']
+        top, bottom = self.props['TopEdge'], self.props['BottomEdge']
+        width, height = right - left, bottom - top
+        self.info = Info(
+            left=-width // 2,
+            right=width // 2,
+            top=-width // 2,
+            bottom=width // 2,
+        )
 
     def add_detector(self, constructor):
         self.detectors.append(constructor(self))
@@ -55,6 +69,17 @@ class App:
                 stdout=sys.stdout,
                 cwd=str(config_dir),
             )
+
+    def fix_event(self, event: Event) -> Event:
+        # make coordinates be square with center in point (0, 0)
+        left, right = self.props['LeftEdge'], self.props['RightEdge']
+        top, bottom = self.props['TopEdge'], self.props['BottomEdge']
+        width, height = right - left, bottom - top
+        x = event.x - left
+        y = event.y - top
+        x = int((x / width - 0.5) * width)
+        y = int((y / height - 0.5) * width)
+        return dataclasses.replace(event, x=x, y=y)
 
     def process_event(self, event: Event):
         if event.is_end:
@@ -107,6 +132,7 @@ class App:
                     continue
                 if self.ignore_until > self.time:
                     continue
+                event = self.fix_event(event)
                 self.process_event(event)
 
     def set_timer(self, detector: Detector, moment: float):

@@ -67,13 +67,20 @@ class SwipeDetector(Detector):
                 self.exec(AXIS_NAMES[self.repeat_axis] + '.stop')
 
     def handle(self, time: float, x: int, y: int, force: int, fingers: int, area: int) -> bool:
-        if self.state == 0:
+        if self.state == -2 or self.state == 0:
             if fingers == 3 or (fingers == 1 and area >= 8):
                 self.state = 1
                 self.sx, self.sy = x, y
                 self.big = area >= 8
             else:
-                self.state = -1
+                if self.state != -1 and not (
+                    self.app.info.left <= x <= self.app.info.right or
+                    self.app.info.top <= y <= self.app.info.bottom
+                ):
+                    self.state = -1
+                else:
+                    # if moving from the corner, then set state to -2 and wait for good event
+                    self.state = -2
 
         if self.state >= 1:
             if area >= 8:
@@ -98,8 +105,7 @@ class SwipeDetector(Detector):
                 self.exec(DIR_NAMES[self.rounded_angle], '1' if self.big else '0')
 
         if self.state >= 3:
-            # self.sx = (self.app.props['LeftEdge'] + self.app.props['RightEdge']) // 2
-            # self.sy = (self.app.props['TopEdge'] + self.app.props['BottomEdge']) // 2
+            self.sx, self.sy = 0, 0
             self.ex = x
             self.ey = y
 
