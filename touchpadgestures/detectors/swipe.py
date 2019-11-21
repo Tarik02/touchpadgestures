@@ -73,9 +73,9 @@ class SwipeDetector(Detector):
                 self.sx, self.sy = x, y
                 self.big = area >= 8
             else:
-                if self.state != -1 and not (
-                    self.app.info.left <= x <= self.app.info.right or
-                    self.app.info.top <= y <= self.app.info.bottom
+                if self.state != -2 and not (
+                    self.app.info.left <= x * 1.8 <= self.app.info.right or
+                    self.app.info.top <= y * 1.8 <= self.app.info.bottom
                 ):
                     self.state = -1
                 else:
