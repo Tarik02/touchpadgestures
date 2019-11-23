@@ -4,7 +4,7 @@ from touchpadgestures.detectors.detector import Detector
 THRESHOLD1 = 500
 THRESHOLD2 = 800
 THRESHOLD_REPEAT = 600
-THRESHOLD_REPEAT_CANCEL = 500
+THRESHOLD_REPEAT_CANCEL = 400
 REPEAT_FIRST_TIMEOUT = 0.6
 REPEAT_INTERVAL = 0.8
 
@@ -105,7 +105,7 @@ class SwipeDetector(Detector):
                 self.exec(DIR_NAMES[self.rounded_angle], '1' if self.big else '0')
 
         if self.state >= 3:
-            self.sx, self.sy = 0, 0
+            #self.sx, self.sy = 0, 0
             self.ex = x
             self.ey = y
 
